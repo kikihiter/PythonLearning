@@ -1,0 +1,24 @@
+# https://www.cnblogs.com/an9wer/p/5475551.html
+example 1：
+    1>  def a():
+    2>      print 'A'
+    3>      return []
+    4>  def b():
+    5>      print 'B'
+    6>      return []
+    7>  def c():
+    8>      print 'C'
+    9>      return 1
+    10> def d():
+    11>     print 'D'
+    12>     return []
+    13> def e():
+    14>     print 'E'
+    15>     return 1
+    16>
+    17> if a() and b() and c() and d() and e():
+    18>     print 'ok'
+    
+    #显示结果如下
+    A
+    
