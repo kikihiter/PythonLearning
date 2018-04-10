@@ -22,3 +22,112 @@ example 1：
     #显示结果如下
     A
     
+example 2：
+    1>  def a():
+    2>      print 'A'
+    3>      return 1
+    4>  def b():
+    5>      print 'B'
+    6>      return 1
+    7>  def c():
+    8>      print 'C'
+    9>      return []
+    10> def d():
+    11>     print 'D'
+    12>     return []
+    13> def e():
+    14>     print 'E'
+    15>     return 1
+    16>
+    17> if a() and b() and c() and d() and e():
+    18>     print 'ok'
+
+    #显示结果如下
+    A
+    B
+    C
+    
+example 3：
+    1>  def a():
+    2>      print 'A'
+    3>      return 1
+    4>  def b():
+    5>      print 'B'
+    6>      return []
+    7>  def c():
+    8>      print 'C'
+    9>      return 1
+    10> def d():
+    11>     print 'D'
+    12>     return []
+    13> def e():
+    14>     print 'E'
+    15>     return 1
+    16>
+    17> if a() or b() or c() or d() or e():
+    18>     print 'ok'
+
+    #显示结果如下
+    A
+    ok
+
+example 4：
+    1>  def a():
+    2>      print 'A'
+    3>      return []
+    4>  def b():
+    5>      print 'B'
+    6>      return []
+    7>  def c():
+    8>      print 'C'
+    9>      return 1
+    10> def d():
+    11>     print 'D'
+    12>     return []
+    13> def e():
+    14>     print 'E'
+    15>     return 1
+    16>
+    17> if a() or b() or c() or d() or e():
+    18>     print 'ok'
+
+    #显示结果如下
+    A
+    B
+    C
+    ok
+    
+example 5：
+    1>  def a():
+    2>      print 'A'
+    3>      return []
+    4>  def b():
+    5>      print 'B'
+    6>      return []
+    7>  def c():
+    8>      print 'C'
+    9>      return 1
+    10> def d():
+    11>     print 'D'
+    12>     return []
+    13> def e():
+    14>     print 'E'
+    15>     return 1
+    16> def f():
+    17>     print 'F'
+    18>     return 1
+    19> def g():
+    20>     print 'G'
+    21>     return []
+    22> def h():
+    23>     print 'H'
+    24>     return 1
+    25>
+    26> if a() and b() and  c() and d() or e() and f() or g() and h():
+    27>     print 'ok'
+
+    #输出结果如下：
+    A
+    E
+    F
+    ok
