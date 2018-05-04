@@ -24,3 +24,25 @@ t2 = t + [4]
 而使用t2 = t + [4]后，t2是在原用t1的基础上再增加一个元素4，而实际列表t中元素无变化。
 结论：
 使用append实际是修改一个列表，使用+实际是创建一个新的列表。
+
+
+"""
+更新 18/05/04
+"""
+在函数调用上的区别更加明显
+
+def tianJia1(list):
+    list = list + [0]
+    #实际上相当于生成了一个新的列表，“list”指向了这个新的列表，原列表并没有发生改变，当函数调用完成后，“list”重新指回原列表
+def tianJia2(list):
+    list.append(0)
+    #直接在原列表末端添加元素，原列表发生了改变
+if __name__ == "__main__":
+    testList1 = [1]
+    tianJia1(testList1)
+    print (testList1)
+    #[1]
+    testList2 = [1]
+    tianJia2(testList2)
+    print (testList2)
+    #[1,0]
