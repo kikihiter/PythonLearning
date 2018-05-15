@@ -1,0 +1,98 @@
+http://www.runoob.com/python/python-func-set.html
+
+描述
+set() 函数创建一个无序不重复元素集，可进行关系测试，删除重复数据，还可以计算交集、差集、并集等。
+语法
+set 语法：
+class set([iterable])
+参数说明：
+iterable -- 可迭代对象对象；
+返回值
+返回新的集合对象。
+实例
+以下实例展示了 set 的使用方法：
+>>>x = set('runoob')
+>>> y = set('google')
+>>> x, y
+(set(['b', 'r', 'u', 'o', 'n']), set(['e', 'o', 'g', 'l']))   # 重复的被删除
+>>> x & y         # 交集
+set(['o'])
+>>> x | y         # 并集
+set(['b', 'e', 'g', 'l', 'o', 'n', 'r', 'u'])
+>>> x - y         # 差集
+set(['r', 'b', 'u', 'n'])
+>>>
+
+
+
+https://www.cnblogs.com/sharon123/p/7090001.html
+Set
+
+ set也是一组数，无序，内容又不能重复，通过调用set()方法创建：
+
+>>> s = set(['A', 'B', 'C'])
+对于访问一个set的意义就仅仅在于查看某个元素是否在这个集合里面，注意大小写敏感：
+
+>>> print 'A' in s
+True
+>>> print 'D' in s
+False
+也通过for来遍历：
+
+复制代码
+s = set([('Adam', 95), ('Lisa', 85), ('Bart', 59)])
+
+for x in s:
+    print x[0],':',x[1]
+
+>>>
+Lisa : 85
+Adam : 95
+Bart : 59
+复制代码
+通过add和remove来添加、删除元素（保持不重复），添加元素时，用set的add()方法
+
+>>> s = set([1, 2, 3])
+>>> s.add(4)
+>>> print s
+set([1, 2, 3, 4])
+如果添加的元素已经存在于set中，add()不会报错，但是不会加进去了：
+
+>>> s = set([1, 2, 3])
+>>> s.add(3)
+>>> print s
+set([1, 2, 3])
+删除set中的元素时，用set的remove()方法：
+
+>>> s = set([1, 2, 3, 4])
+>>> s.remove(4)
+>>> print s
+set([1, 2, 3])
+如果删除的元素不存在set中，remove()会报错：
+>>> s = set([1, 2, 3])
+>>> s.remove(4)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+KeyError: 4
+所以如果我们要判断一个元素是否在一些不同的条件内符合，用set是最好的选择，下面例子：
+
+复制代码
+months = set(['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec',])
+x1 = 'Feb'
+x2 = 'Sun'
+
+if x1 in months:
+    print 'x1: ok'
+else:
+    print 'x1: error'
+
+if x2 in months:
+    print 'x2: ok'
+else:
+    print 'x2: error'
+
+>>>
+x1: ok
+x2: error
+复制代码
+另外，set的计算效率比list高，见http://www.linuxidc.com/Linux/2012-07/66404.htm
