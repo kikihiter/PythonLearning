@@ -1,0 +1,525 @@
+https://blog.csdn.net/qq_32506555/article/details/53616075
+
+Python中super()和__init__()有什么区别？
+
+博客
+学院
+下载
+图文课
+TinyMind
+论坛
+APP
+问答
+商城
+VIP会员
+活动
+招聘
+ITeye
+GitChat
+
+搜博主文章
+写博客
+发Chat
+传资源
+登录注册
+原
+Python中super()和__init__()有什么区别？
+2016年12月13日 22:43:00 qq_32506555 阅读数：848
+本文和大家分享的主要是python开发中super()和__init__()的区别，希望通过本文的分享，对初学者学习这部分内容有所帮助。
+
+1、单继承时super()和__init__()实现的功能是类似的
+
+class Base(object):
+
+    def __init__(self):
+
+        print 'Base create'
+
+ class childA(Base):
+
+    def __init__(self):
+
+        print 'creat A ',
+
+        Base.__init__(self)
+
+ 
+
+ class childB(Base):
+
+    def __init__(self):
+
+        print 'creat B ',
+
+        super(childB, self).__init__()
+
+ 
+
+base = Base()
+
+ 
+
+a = childA()
+
+b = childB()
+
+输出结果：
+
+Basecreate
+
+creat A  Basecreate
+
+creat B  Basecreate
+
+使用super()继承时不用显式引用基类。
+
+ 
+
+2、super()只能用于新式类中
+
+把基类改为旧式类，即不继承任何基类
+
+class Base():
+
+    def __init__(self):
+
+        print 'Base create'
+
+执行时，在初始化b时就会报错：
+
+super(childB, self).__init__()TypeError: mustbetype, not classobj
+
+ 
+
+3、super不是父类，而是继承顺序的下一个类
+
+在多重继承时会涉及继承顺序，super（）相当于返回继承顺序的下一个类，而不是父类，类似于这样的功能：
+
+defsuper(class_name, self):
+
+    mro = self.__class__.mro()
+
+    return mro[mro.index(class_name) + 1]
+
+mro()用来获得类的继承顺序。
+
+例如：
+
+class Base(object):
+
+    def__init__(self):
+
+        print 'Base create'
+
+ class childA(Base):
+
+    def__init__(self):
+
+        print 'enter A '
+
+        # Base.__init__(self)
+
+        super(childA, self).__init__()
+
+        print 'leave A'
+
+ 
+
+ class childB(Base):
+
+    def__init__(self):
+
+        print 'enter B '
+
+        # Base.__init__(self)
+
+        super(childB, self).__init__()
+
+        print 'leave B'
+
+ class childC(childA, childB):
+
+    pass
+
+ 
+
+c = childC()print c.__class__.__mro__
+
+ 
+
+输入结果如下：
+
+enter A
+
+enter B
+
+Basecreate
+
+leave B
+
+leave A
+
+(<class '__main__.childC'>, <class '__main__.childA'>, <class '__main__.childB'>, <class '__main__.Base'>, <type 'object'>)
+
+supder和父类没有关联，因此执行顺序是A —> B—>—>Base
+
+执行过程相当于：初始化childC()时，先会去调用childA的构造方法中的 super(childA, self).__init__()， super(childA, self)返回当前类的继承顺序中childA后的一个类childB；然后再执行childB().__init()__,这样顺序执行下去。
+
+在多重继承里，如果把childA()中的 super(childA, self).__init__() 换成Base.__init__(self)，在执行时，继承childA后就会直接跳到Base类里，而略过了childB：
+
+enter A
+
+Basecreate
+
+leave A
+
+(<class '__main__.childC'>, <class '__main__.childA'>, <class '__main__.childB'>, <class '__main__.Base'>, <type 'object'>)
+
+从super()方法可以看出，super（）的第一个参数可以是继承链中任意一个类的名字，
+
+如果是本身就会依次继承下一个类；
+
+如果是继承链里之前的类便会无限递归下去；
+
+如果是继承链里之后的类便会忽略继承链汇总本身和传入类之间的类；
+
+比如将childA()中的super改为：super(childC, self).__init__()，程序就会无限递归下去。
+
+如：
+
+  File "C:/Users/Administrator/Desktop/crawler/learn.py", line 10, in __init__
+
+    super(childC, self).__init__()
+
+  File "C:/Users/Administrator/Desktop/crawler/learn.py", line 10, in __init__
+
+    super(childC, self).__init__()
+
+  File "C:/Users/Administrator/Desktop/crawler/learn.py", line 10, in __init__
+
+    super(childC, self).__init__()
+
+  File "C:/Users/Administrator/Desktop/crawler/learn.py", line 10, in __init__
+
+    super(childC, self).__init__()
+
+  File "C:/Users/Administrator/Desktop/crawler/learn.py", line 10, in __init__
+
+    super(childC, self).__init__()
+
+  File "C:/Users/Administrator/Desktop/crawler/learn.py", line 10, in __init__
+
+    super(childC, self).__init__()
+
+  File "C:/Users/Administrator/Desktop/crawler/learn.py", line 10, in __init__
+
+    super(childC, self).__init__()
+
+  File "C:/Users/Administrator/Desktop/crawler/learn.py", line 10, in __init__
+
+    super(childC, self).__init__()
+
+  File "C:/Users/Administrator/Desktop/crawler/learn.py", line 10, in __init__
+
+    super(childC, self).__init__()
+
+  File "C:/Users/Administrator/Desktop/crawler/learn.py", line 10, in __init__
+
+    super(childC, self).__init__()
+
+  File "C:/Users/Administrator/Desktop/crawler/learn.py", line 10, in __init__
+
+    super(childC, self).__init__()
+
+  File "C:/Users/Administrator/Desktop/crawler/learn.py", line 10, in __init__
+
+    super(childC, self).__init__()
+
+  File "C:/Users/Administrator/Desktop/crawler/learn.py", line 10, in __init__
+
+    super(childC, self).__init__()RuntimeError: maximumrecursiondepthexceededwhile calling a Pythonobject
+
+4、super()可以避免重复调用
+
+如果childA基础Base, childB继承childA和Base，如果childB需要调用Base的__init__()方法时，就会导致__init__()被执行两次：
+
+class Base(object):
+
+    def__init__(self):
+
+        print 'Base create'
+
+ class childA(Base):
+
+    def__init__(self):
+
+        print 'enter A '
+
+        Base.__init__(self)
+
+        print 'leave A'
+
+ 
+
+ class childB(childA, Base):
+
+    def__init__(self):
+
+        childA.__init__(self)
+
+        Base.__init__(self)
+
+ 
+
+b = childB()
+
+Base的__init__()方法被执行了两次
+
+enter A
+
+Basecreate
+
+leave A
+
+Basecreate
+
+使用super()是可避免重复调用
+
+class Base(object):
+
+    def__init__(self):
+
+        print 'Base create'
+
+ class childA(Base):
+
+    def__init__(self):
+
+        print 'enter A '
+
+        super(childA, self).__init__()
+
+        print 'leave A'
+
+ 
+
+ class childB(childA, Base):
+
+    def__init__(self):
+
+        super(childB, self).__init__()
+
+ 
+
+b = childB()
+
+print b.__class__.mro()
+
+enter A
+
+Basecreate
+
+leave A[<class '__main__.childB'>, <class '__main__.childA'>, <class '__main__.Base'>, <type 'object'>]
+
+ 
+
+来源：伯乐在线
+
+详解python的super()的作用和原理
+Python中对象方法的定义很怪异，第一个参数一般都命名为self（相当于其它语言的this，比如：C#），用于传递对象本身，而在调用的时候则不 必显式传递，系统会自动传递。 今天我们介绍的主角是...
+想对作者说点什么？ 我来说一句
+【python】详解类class的继承、__init__初始化、super方法（五）
+brucewong0516
+ 5641
+
+通过之前四篇的介绍： 【python】python中的类，对象，方法，属性初认识（一）详见链接 【python】详解类class的属性：类数据属性、实例数据属性、特殊的类属性、属性隐藏（二）详见链...
+
+Python中super()方法的使用
+Four_Infinite
+ 5492
+
+如果在子类中也定义了构造器，既_init_()函数，那么基类的构造器该如何调用呢？方法一、明确指定 使用一个子类的实例去调用基类的构造器，在子类的构造器中明确的指明调用基类的构...
+
+python super().__init()__
+xiaojiajia007
+ 2376
+
+class Root(object):     def __init__(self):         print 'ok, good luck!'          class A(Root):  ...
+
+super( test, self).__init__()
+nmxnm
+ 666
+
+python中的super( test, self).__init__() 首先找到test的父类（比如是类A），然后把类test的对象self转换为类A的对象，然后“被转换”的类A对象调用自己...
+
+Python 面向对象中的__init__、__new__以及super()
+woaidapaopao
+ 3506
+
+1、__init__()和__new__()的关系 借用代码解释一下，注意这些都是在python2.7下面构造的，在py3.x可能会有所不同，比如在super()上，Python 2 里super(...
+
+关于Python的super用法研究
+JohnsonGuo
+ 7.1万
+
+一、问题的发现与提出　　在Python类的方法（method）中，要调用父类的某个方法，在Python 2.2以前，通常的写法如代码段1： 代码段1： class A:  def __init__(s...
+
+super init
+ajdfhajdkfakr
+ 227
+
+【构造方法】1.通常面向对象的语言都有在创建对象的时候，使用构造方法 2.在OC当中，所有init开头的方法，都是要手动调用的，是对类的对象进行初始化，包含两种，有参和无参 self其实就是对象本...
+
+python中super()应用详解
+kinghace
+ 232
+
+一、问题的发现与提出　　在Python类的方法（method）中，要调用父类的某个方法，在Python 2.2以前，通常的写法如代码段1： 代码段1：class A: def __init...
+
+super.init(config)调用的原理
+feijianxia
+ 4231
+
+原创文章,鼓励转载请务必注明出处,作者:李佳 servlet的init(ServletConfig config)方法中会有一个super.init(config);其原理如下:１.如果用户不需要设置...
+
+super继承和普通父类继承
+LANGQING12345
+ 765
+
+当存在继承关系的时候，有时候需要在子类中调用父类的方法，此时最简单的方法是把对象调用转换成类调用，需要注意的是这时self参数需要显式传递，例如： class FooParent(object): ...
+
+Python中super()方法
+Bill_zhang5
+ 265
+
+在面向对象编程中，子类经常要调用父类的方法，在Python中，也不例外。 为了调用父类(超类)的一个方法，可以使用 super() 函数，比如： class A: def spam(s...
+
+Python类中super()和__init__()的关系
+xc_zhou
+ 49
+
+1.单继承时super()和__init__()实现的功能是类似的 class Base(object): def __init__(self): print 'Base...
+
+python3.x之super()用法小结
+wind_602
+ 1510
+
+传统调用父类的方式 传统父类方法调用 # super.py class SuperClass(object): def act(self): print("Super Cl...
+
+ 
+qq_32506555
+
+关注
+原创
+1124
+粉丝
+40
+喜欢
+17
+评论
+49
+等级： 访问： 39万+ 积分： 1万+ 排名： 1209
+勋章：
+最新文章
+忍者必须死3雷宿麒麟武器介绍 武器如何培养
+《文明大爆炸》一键调配有什么用 一键调配功能介绍
+广积粮，缓称王《文明大爆炸》科技研发顺序
+《文明大爆炸》流派玩法 这些流派你们知道吗
+神秘线索放出 《梦幻模拟战》官网悬念站正式上线
+归档
+2018年9月 5篇
+2018年8月 4篇
+2018年6月 10篇
+2018年5月 54篇
+2018年4月 57篇
+2018年3月 2篇
+2017年10月 7篇
+2017年9月 51篇
+2017年8月 82篇
+2017年7月 79篇
+2017年6月 74篇
+2017年5月 18篇
+2017年4月 8篇
+2017年3月 48篇
+2017年2月 56篇
+2017年1月 56篇
+2016年12月 68篇
+2016年11月 72篇
+2016年10月 90篇
+2016年9月 43篇
+2016年8月 74篇
+2016年7月 48篇
+2016年6月 42篇
+2016年5月 17篇
+2016年4月 14篇
+2016年3月 30篇
+展开
+
+热门文章
+前端人员必知的Vue.js条件v-if与列表循环v-for相关用法
+阅读量：5983
+
+使用CLion做嵌入式开发方法步骤详解？
+阅读量：5481
+
+4种字母组合方式，玩转logo设计
+阅读量：5429
+
+Web前端开发之@ 功能 JS 实现原理详解
+阅读量：4261
+
+python字符串搜索与匹配
+阅读量：3914
+
+最新评论
+如何提升微信的阅读量？
+qq_43107022：微信公众号刷阅读量、加粉、提升文章阅读量，我一直用的是云推数据：http://zfsud.yunt...
+
+神经网络学习之代价函数详解
+xiaofang_he：theta1是不是一个5*4的矩阵
+
+麦子学院：产品经理八大惹怒程序员而...
+zxc123789tm：还行还行。 我们和公司产品相处还是挺融洽的
+
+麦子学院：产品经理八大惹怒程序员而...
+qq_29545231：谢谢博主的分享
+
+麦子学院：产品经理八大惹怒程序员而...
+jszj：要是这么说，难道之前我遇到了假cpjl？
+
+联系我们
+客服
+请扫描二维码联系客服
+webmaster@csdn.net
+
+400-660-0108
+
+QQ客服 客服论坛
+
+关于招聘广告服务 网站地图
+
+©2018 CSDN版权所有 京ICP证09002463号
+
+百度提供搜索支持
+
+app
+经营性网站备案信息
+
+网络110报警服务
+
+中国互联网举报中心
+
+北京互联网违法和不良信息举报中心
+
+CSDN APP
+
+登录
+注册
+
+
+0
+
+ 
+
+ 
+
