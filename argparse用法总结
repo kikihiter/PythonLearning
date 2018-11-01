@@ -1,0 +1,109 @@
+https://blog.csdn.net/yuyushikuan/article/details/79729660
+
+    1
+    2
+
+import argparse    //导入命令行解析的库文件
+parse = argparse.ArgumentParser(description="test!!")  //为了别人执行代码的时候用--help看出来怎么使用这些代码
+
+    1
+    2
+
+以上两句是必须的，下面是根据你的代码需要添加的参数命令行：
+
+parse.add_argument('keyoukewu',help='keyoukewu'，nargs='?')  //如果不加上最后一个参数nargs则执行代码的时候必须加上这个参数，
+                                                            //如果有nargs说明这个参数可带可不带
+
+    1
+    2
+
+parse.add_argument('-a','--abc',help='a sourcedir',nargs='?')
+print(args.abc)
+print(args.a) //是错误的
+//运行时使用python demo.py -a abc
+//或者使用python demo.py --abc abc(使用的是两个短横)
+//参数的前面可以添加‘-’，也可以添加‘--’。说明添加的参数可以用简写也可以用全称来标明。但是解析的时候必须用全称。
+
+    1
+    2
+    3
+    4
+    5
+    6
+
+有些参数可以不加上的时候默认的值是bool变量。
+
+parse.add_argument('-a','--abc',help='a sourcedir',action='store_true')
+//这里的参数action的作用标明如果不写参数的话默认的print(args.a)的值是false，但是如果加上参数的话默认的print(args.a)的值
+//为true，其中运行的参数的值不需要加上。
+//如果很多的参数都加上了这些参数
+
+    1
+    2
+    3
+    4
+
+上面的情况是默认为bool类型变量的0，当然也可以设置为自己想要的默认值。
+
+parse.add_argument('-a','--abc',help='a sourcedir',action='store_true'，default=3)
+//这时如果加上default的关键字，如果加上参数的话为则参数的值为1，但如果不加则采用默认的3，不再是0
+//但是这时由于采用了action='store_true'的关键字，所以不再加上得关键字不能再跟着int的数字
+//例如：python demo.py -a (is not ture.)
+parse.add_argument('-a','--abc',help='a sourcedir',default=3)
+//must add！！！！！！！1
+
+    1
+    2
+    3
+    4
+    5
+    6
+
+f
+添加互斥的参数组，因为有些参数的使用是不能同时出现的：
+
+group = parse.add_mutually_exclusive_group()   //必须先要定义一个互斥的参数组
+group.add_argument('-a','--abc',help='a sourceaaa',action='store_true') //在参数组内添加互斥的参数，必须加上store_true的参数
+group.add_argument('-b','--bc',help='a sourceabb',action='store_true')
+
+如果定义了以上参数后，运行以上的代码时，-a -b的参数只能加上一个，加上的为true，不可以同时加上。无论在互斥组内有多少的参数，都只能出现一个。
+
+    1
+    2
+    3
+    4
+    5
+
+说明，在其中如果出现形式如下：
+
+parse.add_argument('-a','--abc',help='a sourcedir',nargs='?')
+//这时参数的全名为abc，但是如果出现dest关键字，则全程为dest关键字定义的字段
+parse.add_argument('-a','--abc'，dest='mn',help='a sourcedir',nargs='?')
+//这时无论全名是mn，不再是abc
+
+    1
+    2
+    3
+    4
+
+python 中默认的sys.argv[]会自动保存运行python代码时的参数，如果参数为一个就保存在sys.argv[1]中，多的会依次向下存：
+
+import sys
+
+print(sys.argv[1])
+print(sys.argv[2])
+
+    1
+    2
+    3
+    4
+
+如果执行以上的代码：
+python 1 2
+会自动打印1，2
+但是必须是两个参数。不然会提示参数过多而导致数组下标越界.
+--------------------- 
+作者：H-T-TYSK 
+来源：CSDN 
+原文：https://blog.csdn.net/yuyushikuan/article/details/79729660 
+版权声明：本文为博主原创文章，转载请附上博文链接！
