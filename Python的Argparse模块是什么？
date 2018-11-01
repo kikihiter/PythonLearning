@@ -1,0 +1,108 @@
+ https://www.cnblogs.com/Hangingter/p/8093562.html
+ 
+ Python的Argparse模块是什么？
+
+        近日在阅读代码的过程中遇到了Argparse模块，记得前段时间已经看了，可是过了两周现在又忘了， 看来写代码一定要钻研到底搞清楚其中原委才行，本文主要参考Python3.6系列官方文档的Argparse模块的教程。
+
+　　注意：还有两个模块与Argparse功能相似，getopt和optparse。 argparse基于optparse，因此在使用方面非常相似，但是不推荐使用optparse，官方文档更推荐argparse。
+
+1.Argparse的作用
+
+        举一个小例子，在Linux系统中，我们常用到 ls 这个命令，默认情况下 ls 会显示当前目录的所有文件或文件夹名称，但是当我们想要获得更多信息，如文件的权限、建立时间等，就需要在 ls 命令后加上 -all 或其他被允许的指令，因此对 ls 这个命令而言，假设我们想改变程序的行为，显示每个文件的更多信息，而不是只显示文件名。 在这种情况下，-all 被称为可选参数。同样的， ls 还具有 -h 这个可以选择的参数，这表示打开帮助文本。 这非常有用，你可以遇到一个你以前从未使用过的程序，并且可以简单地通过阅读帮助文本来弄清楚它是如何工作的。
+
+　　Argparse的作用就是为py文件封装好可以选择的参数，使他们更加灵活，丰富。
+
+2.Argparse的基础
+
+　　下面介绍argparse的基础调用。把下面的代码写入，保存为prog.py
+
+1 import argparse
+2 parser = argparse.ArgumentParser()
+3 parser.parse_args()
+
+　　OK,调用python3，运行一下试试：
+复制代码
+
+$ python3 prog.py
+$ python3 prog.py --help
+
+usage: prog.py [-h]
+optional arguments:
+  -h, --help  show this help message and exit
+
+$ python3 prog.py --verbose
+usage: prog.py [-h]
+prog.py: error: unrecognized arguments: --verbose
+
+$ python3 prog.py foo
+usage: prog.py [-h]
+prog.py: error: unrecognized arguments: foo
+
+复制代码1
+
+ Python的Argparse模块是什么？
+
+2
+
+​
+
+3
+
+        近日在阅读代码的过程中遇到了Argparse模块，记得前段时间已经看了，可是过了两周现在又忘了， 看来写代码一定要钻研到底搞清楚其中原委才行，本文主要参考Python3.6系列官方文档的Argparse模块的教程。
+
+4
+
+​
+
+5
+
+　　注意：还有两个模块与Argparse功能相似，getopt和optparse。 argparse基于optparse，因此在使用方面非常相似，但是不推荐使用optparse，官方文档更推荐argparse。
+
+6
+
+​
+
+7
+
+1.Argparse的作用
+
+8
+
+​
+
+9
+
+        举一个小例子，在Linux系统中，我们常用到 ls 这个命令，默认情况下 ls 会显示当前目录的所有文件或文件夹名称，但是当我们想要获得更多信息，如文件的权限、建立时间等，就需要在 ls 命令后加上 -all 或其他被允许的指令，因此对 ls 这个命令而言，假设我们想改变程序的行为，显示每个文件的更多信息，而不是只显示文件名。 在这
+
+　　第一个命令直接运行脚本程序，没有任何输出，因为该脚本并没有运行任何选项，源程序也没有设置默认，所以不会有参数传出。第二个命令使用--help参数的时候没有报错，系统给出了结果，那是系统默认的帮助信息。很明显，最后两次使用都报错了，因为该脚本内并没有写入verbose和foo。
+
+2.给Argparse加上参数
+
+　　同样的，写上一段python代码，保存为prog.py供之后调用：
+
+1 import argparse
+2 parser = argparse.ArgumentParser()
+3 parser.add_argument("echo")
+4 args = parser.parse_args()
+5 print(args.echo)
+
+　　运行结果如下：
+复制代码
+
+$ python3 prog.py
+usage: prog.py [-h] echo
+prog.py: error: the following arguments are required: echo
+$ python3 prog.py --help
+usage: prog.py [-h] echo
+
+positional arguments:
+  echo
+
+optional arguments:
+  -h, --help  show this help message and exit
+$ python3 prog.py foo
+foo
+
+复制代码
+
+　　添加了add_argument（）后，这是我们用来指定程序可以接受的命令行选项。 此时我已经命名 echo (linux中的输出命令)，所以当调用时，要求我们指定一个选项。parse_args（）方法实际上从指定的选项中返回一些数据，此时是echo。argparse可以直接执行（即不需要指定哪个存储后的变量）。 它的名字和指定的字符串参数 echo 相匹配。
