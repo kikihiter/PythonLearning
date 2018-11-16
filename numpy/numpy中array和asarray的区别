@@ -1,0 +1,70 @@
+https://blog.csdn.net/Gobsd/article/details/56485177
+
+numpy中array和asarray的区别
+
+array和asarray都可以将结构数据转化为ndarray，但是主要区别就是当数据源是ndarray时，array仍然会copy出一个副本，占用新的内存，但asarray不会。
+
+举例说明：
+
+import numpy as np
+
+#example 1:
+data1=[[1,1,1],[1,1,1],[1,1,1]]
+arr2=np.array(data1)
+arr3=np.asarray(data1)
+data1[1][1]=2
+print 'data1:\n',data1
+print 'arr2:\n',arr2
+print 'arr3:\n',arr3
+
+
+输出：
+
+data1:
+[[1, 1, 1], [1, 2, 1], [1, 1, 1]]
+arr2:
+[[1 1 1]
+ [1 1 1]
+ [1 1 1]]
+arr3:
+[[1 1 1]
+ [1 1 1]
+ [1 1 1]]
+
+
+可见array和asarray没有区别，都对元数据进行了复制。
+
+import numpy as np
+
+#example 2:
+arr1=np.ones((3,3))
+arr2=np.array(arr1)
+arr3=np.asarray(arr1)
+arr1[1]=2
+print 'arr1:\n',arr1
+print 'arr2:\n',arr2
+print 'arr3:\n',arr3
+
+
+输出：
+
+arr1:
+[[ 1.  1.  1.]
+ [ 2.  2.  2.]
+ [ 1.  1.  1.]]
+arr2:
+[[ 1.  1.  1.]
+ [ 1.  1.  1.]
+ [ 1.  1.  1.]]
+arr3:
+[[ 1.  1.  1.]
+ [ 2.  2.  2.]
+ [ 1.  1.  1.]]
+
+
+此时两者才表现出区别
+--------------------- 
+作者：Gobsd 
+来源：CSDN 
+原文：https://blog.csdn.net/Gobsd/article/details/56485177 
+版权声明：本文为博主原创文章，转载请附上博文链接！
