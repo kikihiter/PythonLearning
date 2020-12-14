@@ -1,0 +1,158 @@
+# https://blog.csdn.net/a__int__/article/details/104600972</br>
+
+对于python里的super().__init__()有什么作用，很多同学没有弄清楚。
+
+直白的说super().__init__()，就是继承父类的init方法，同样可以使用super()点 其他方法名，去继承其他方法。
+
+下面通过三个不同的继承并调用，对比他们的区别，搞清楚super().__init__()的用途。
+
+1、从实例中对比
+1.1、实例
+先写一个父类
+在这里插入图片描述
+再写三个继承自该父类的子类
+在这里插入图片描述
+
+第一个子类Puple直接继承
+第二个子类Puple_Init继承并写了init方法
+第三个子类Puple_Super继承并写了init方法，还添加了super().__init__()
+
+分别创建三个类的对象
+在这里插入图片描述
+
+1.2、运行结果与对比
+第一个对象pp：可以直接调用父类的name
+在这里插入图片描述
+第二个对象pp_i：继承自父类，覆盖初始化def init，增加属性age，不能调用name属性
+
+被覆盖了，没有name属性了
+
+在这里插入图片描述
+第三对象pp_s：继承自父类，覆盖初始化化def init，并继承初始化属性name，可以调用
+
+先是被覆盖了，后面又用super().__init__()把父类的init方法继承回来了
+
+在这里插入图片描述
+
+1.3、完整代码
+在这里插入图片描述
+
+2、关于继承顺序
+最底层：先写一个父类A
+
+class A:
+    def __init__(self):
+        print('A')
+1
+2
+3
+第二层：让 B、C、D 继承自A
+
+class B(A):
+    def __init__(self):
+        print('B')
+        super().__init__()
+
+class C(A):
+    def __init__(self):
+        print('C')
+        super().__init__()
+
+class D(A):
+    def __init__(self):
+        print('D')
+        super().__init__()
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+第三层： E、F、G 继承
+
+class E(B, C):
+    def __init__(self):
+        print('E')
+        super().__init__()
+
+class F(C, D):
+    def __init__(self):
+        print('F')
+        super().__init__()
+
+class G(E, F):
+    def __init__(self):
+        print('G')
+        super().__init__()
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+看看G的继承顺序
+在这里插入图片描述
+在这里插入图片描述
+我们发现G继承自E, F是并列的，初始化的时候不会先把E初始化完毕才初始化F。
+
+3、super() 在 python2、3中的区别
+Python3.x 和 Python2.x 的一个区别: Python 3 可以使用直接使用 super().xxx 代替 super(Class, self).xxx :
+
+python3直接写成 super().方法名（参数）
+python2必须写成 super（父类，self）.方法名（参数）
+
+例：
+
+python3: super().__init__()
+python2: super(父类,self).__init__()
+
+Python3.x 实例：
+
+class A:
+     def add(self, x):
+         y = x+1
+         print(y)
+class B(A):
+    def add(self, x):
+        super().add(x)
+b = B()
+b.add(2)  # 3
+1
+2
+3
+4
+5
+6
+7
+8
+9
+Python2.x 实例：
+
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+ 
+class A(object):   # Python2.x 记得继承 object
+    def add(self, x):
+         y = x+1
+         print(y)
+class B(A):
+    def add(self, x):
+        super(B, self).add(x)
+b = B()
+b.add(2)  # 3
